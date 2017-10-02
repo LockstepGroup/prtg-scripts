@@ -83,6 +83,18 @@ $PlaceholderUsage = @"
 
 "@
 
+# Script Parameter Block
+$ScriptParams = @'
+###############################################################################
+# Script Parameters
+
+[CmdletBinding()]   # this adds the ability to use -Verbose and -Debug
+param (
+)
+
+
+'@
+
 # Add PrtgShell Functions
 $PrtgShellFunctions = @'
 ###############################################################################
@@ -104,10 +116,9 @@ $StartScriptHere = @'
 
 '@
 
-
-
 $FullOutput += $Header
 $FullOutput += $PlaceholderUsage
+$FullOutput += $ScriptParams
 $FullOutput += $PrtgShellFunctions
 $FullOutput += $StartScriptHere
 
