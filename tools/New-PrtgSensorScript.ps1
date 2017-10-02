@@ -17,8 +17,10 @@ Param (
 # We'll use these to pull down the most recent version of Set-PrtgError and New-PrtgResult from github
 $PrtgShellRepo    = 'LockstepGroup/prtgshell2'
 $RawContentUrl    = 'https://raw.githubusercontent.com/' + $PrtgShellRepo
-$SetPrtgErrorUrl  = $RawContentUrl + '/master/src/cmdlets/Set-PrtgError.ps1'
-$NewPrtgResultUrl = $RawContentUrl + '/master/src/cmdlets/New-PrtgResult.ps1'
+
+$FunctionUrls  = @()
+$FunctionUrls += $RawContentUrl + '/master/src/cmdlets/Set-PrtgError.ps1'
+$FunctionUrls += $RawContentUrl + '/master/src/cmdlets/New-PrtgResult.ps1'
 
 # Formulate Date
 $Month = Get-Date -Format MM
@@ -45,8 +47,11 @@ $Header = @"
 # $Description
 #
 ###############################################################################
+
+
 "@
 
+$PlaceholderUsage = @"
 ###############################################################################
 #                              PLACEHOLDER USAGE
 # prtg_sensorid ........................................................ UNUSED
@@ -54,7 +59,7 @@ $Header = @"
 # prtg_groupid ......................................................... UNUSED
 # prtg_probeid ......................................................... UNUSED
 #
-# prtg_host ..................................................... $ComputerName
+# prtg_host ............................................................ UNUSED
 # prtg_device .......................................................... UNUSED
 # prtg_group ........................................................... UNUSED
 # prtg_probe ........................................................... UNUSED
@@ -76,6 +81,17 @@ $Header = @"
 ###############################################################################
 
 
+"@
+
+$PrtgShellHeader = @"
+###############################################################################
+# prtgshell2 Functions pulled from github
+# https://github.com/LockstepGroup/prtgshell2
+
+"@
+
+
 $FullOutput += $Header
+$FullOutput += $PlaceholderUsage
 
 $FullOutput | Out-File -FilePath $OutputPath
