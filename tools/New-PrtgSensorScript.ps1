@@ -97,11 +97,18 @@ foreach ($url in $FunctionUrls) {
     $PrtgShellFunctions += "`n"
 }
 
+$StartScriptHere = @'
+###############################################################################
+# Start of actual script
+
+
+'@
 
 
 
 $FullOutput += $Header
 $FullOutput += $PlaceholderUsage
 $FullOutput += $PrtgShellFunctions
+$FullOutput += $StartScriptHere
 
 $FullOutput | Out-File -FilePath $OutputPath
