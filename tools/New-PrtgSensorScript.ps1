@@ -83,15 +83,25 @@ $PlaceholderUsage = @"
 
 "@
 
-$PrtgShellHeader = @"
+# Add PrtgShell Functions
+$PrtgShellFunctions = @'
 ###############################################################################
 # prtgshell2 Functions pulled from github
 # https://github.com/LockstepGroup/prtgshell2
 
-"@
+
+'@
+
+foreach ($url in $FunctionUrls) {
+    $PrtgShellFunctions += (Invoke-WebRequest -Uri $url).Content
+    $PrtgShellFunctions += "`n"
+}
+
+
 
 
 $FullOutput += $Header
 $FullOutput += $PlaceholderUsage
+$FullOutput += $PrtgShellFunctions
 
 $FullOutput | Out-File -FilePath $OutputPath
