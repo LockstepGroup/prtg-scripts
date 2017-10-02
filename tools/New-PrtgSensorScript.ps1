@@ -20,12 +20,16 @@ $RawContentUrl    = 'https://raw.githubusercontent.com/' + $PrtgShellRepo
 $SetPrtgErrorUrl  = $RawContentUrl + '/master/src/cmdlets/Set-PrtgError.ps1'
 $NewPrtgResultUrl = $RawContentUrl + '/master/src/cmdlets/New-PrtgResult.ps1'
 
+# Formulate Date
+$Month = Get-Date -Format MM
+$Year  = Get-Date -Format yyyy
+
 $Header = @"
 ###############################################################################
 #
 # ScriptName: $ScriptName
 # Auther: $AuthorEmail
-# Last Updated: Q4 2015
+# Last Updated: $Month $Year
 # Monitors $Description
 #
 ###############################################################################
