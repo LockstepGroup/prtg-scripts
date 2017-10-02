@@ -24,13 +24,25 @@ $NewPrtgResultUrl = $RawContentUrl + '/master/src/cmdlets/New-PrtgResult.ps1'
 $Month = Get-Date -Format MM
 $Year  = Get-Date -Format yyyy
 
+# Bootstrap variables
+$FullOutput = ""
+
+# Output Path
+try {
+    $OutputDirectory = Resolve-Path $OutputDirectory
+} catch {
+    Throw "OutputDirectory not valid"
+}
+$OutputPath = Join-Path -Path $OutputDirectory -ChildPath "$ScriptName`.ps1"
+
+
 $Header = @"
 ###############################################################################
 #
 # ScriptName: $ScriptName
 # Auther: $AuthorEmail
 # Last Updated: $Month $Year
-# Monitors $Description
+# $Description
 #
 ###############################################################################
 "@
@@ -64,3 +76,6 @@ $Header = @"
 ###############################################################################
 
 
+$FullOutput += $Header
+
+$FullOutput | Out-File -FilePath $OutputPath
