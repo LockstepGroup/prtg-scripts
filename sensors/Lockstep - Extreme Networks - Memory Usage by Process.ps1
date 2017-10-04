@@ -38,7 +38,6 @@
 ###############################################################################
 # Script Parameters
 
-[CmdletBinding()]   # this adds the ability to use -Verbose and -Debug
 param (
 )
 
@@ -183,6 +182,24 @@ foreach ($var in $RequiredVariables) {
     }
 }
 
+# Check for an load required modules
+
+$RequiredModules = @('Posh-SSH') 
+
+foreach ($module in $RequiredModules) {
+    try {
+        Import-Module $module -ErrorAction Stop | Out-Null
+    } catch {
+        return Set-PrtgError "Could not load required module: $module"
+    }
+}
+
+########################################
+# Sensor start
+
+# Used for error tracking
+$CurrentStep = $null
+
 try {
     ########################################
     # Get the info from the switch
@@ -192,13 +209,16 @@ try {
     $DeviceCred = New-Object System.Management.Automation.PSCredential($env:prtg_linuxuser,$DevicePass)
 
     # Connect to switch
-    $SshSession = New-SshSession -ComputerName $env:prtg_host -Credential $DeviceCred
+    $CurrentStep = 'Create SSH Session: ' + $env:prtg_host
+    $SshSession = New-SshSession -ComputerName $env:prtg_host -Credential $DeviceCred -AcceptKey -Force -ErrorAction Stop
 
     # Run Command
+    $CurrentStep = 'Run SSH Command' + ($SshSession.SessionId)
     $Command = 'show memory'
     $CommandResults = Invoke-SSHCommand -SessionId $SshSession.SessionId -Command $Command
 
     # Disconnect SSH Session
+    $CurrentStep = 'Remove SSH Session'
     Remove-SSHSession -SessionId $SshSession.SessionId | Out-Null
 
     ########################################
@@ -211,7 +231,8 @@ try {
         $Channels += Set-PrtgResult `
                          -Channel $match.Groups['process'].Value `
                          -Value $match.Groups['usage'].Value `
-                         -Unit "Kbytes"
+                         -Unit "Kbytes" `
+                         -ShowChart
     }
 
     $XmlOutput  = "<prtg>`n"
@@ -219,5 +240,5 @@ try {
     $XMLOutput += "</prtg>"
     return $XmlOutput
 } catch {
-    return Set-PrtgError "No ComputerName Specified."
+    return Set-PrtgError ('Error: ' + $CurrentStep + ': ' + $Error[0].Exception.Message)
 }
